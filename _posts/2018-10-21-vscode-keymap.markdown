@@ -38,7 +38,7 @@ categories: work efficiency
 + 切换到下一个文件：ctrl + tab
 + 重新打开刚关闭的文件：ctrl + shift + t
 + 从资源管理器打开文件：ctrl + o
-+ 从资源管理器打开文件夹：ctrl + shift + o
++ 从资源管理器打开文件夹：ctrl + k ctrl + o
 
 #### 基础编辑：
 + 移动当前行 ：alt + up/down
