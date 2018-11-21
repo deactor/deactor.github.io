@@ -77,7 +77,7 @@ make clobber
     ``` 
 4. 关闭和删除原来的swapfile(也可以只关闭不删除)
     ``` 
-    sudo swapoff  swapfile
+    sudo swapoff  /swapfile
     sudo rm /swapfile
     ``` 
 5. 设置开机启动
