@@ -98,3 +98,124 @@ $('prev ~ siblings')
 >如果元素中占据文档中一定的空间,元素被认为是可见的。
 可见元素的宽度或高度，是大于零。
 元素的visibility: hidden 或 opacity: 0被认为是可见的，因为他们仍然占用空间布局。
+
+##### (4).属性筛选选择器
+\$("[attribute |= 'value']") : 指定属性值等于value或以value为前缀（该字符串后跟连字符'-'）的元素。  
+\$("[attribute *= 'value']") : 指定属性值包含value的元素。  
+\$("[attribute ~= 'value']") : 指定属性用空格分隔的值中包含value（全词匹配）的元素。  
+\$("[attribute = 'value']") : 指定属性为value的元素。  
+\$("[attribute != 'value']") : 指定属性不为value的元素。  
+\$("[attribute ^= 'value']") : 指定属性以value开始的元素。  
+\$("[attribute $= 'value']") : 指定属性以value结尾的元素，区分大小写。  
+\$("[attribute]") : 选择具有指定属性的元素，元素可以为任何值。  
+\$("[attributeFilter1][attributeFilterN]") : 选择匹配所有指定的属性筛选器的元素。  
+
+##### (5).元素筛选选择器
+\$(":first-child") : 选择所有父级元素下的第一个子元素。  
+\$(":last-child") : 选择所有父级元素下的最后一个子元素。  
+\$(":only-child") : 如果某个元素是其父元素的唯一子元素，那么它就会被选中。  
+\$(":nth-child(n)") : 选择他们的所有父元素的第n个子元素。  
+\$(":nth-last-child(n)") : 选择所有他们父元素的第n个子元素。计数从最后一个元素开始到第一个。  
+
+>1.:first只匹配一个单独的元素，但是:first-child选择器可以匹配多个：即为每个父级元素匹配第一个子元素。这相当于:nth-child(1)  
+2.:last 只匹配一个单独的元素， :last-child 选择器可以匹配多个元素：即，为每个父级元素匹配最后一个子元素  
+3.如果子元素只有一个的话，:first-child与:last-child是同一个  
+4.:only-child匹配某个元素是父元素中唯一的子元素，就是说当前子元素是父元素中唯一的元素，则匹配  
+5.jQuery实现:nth-child(n)是严格来自CSS规范，所以n值是“索引”，也就是说，从1开始计数，:nth-child(index)从1开始的，而eq(index)是从0开始的  
+6.nth-child(n) 与 :nth-last-child(n) 的区别前者是从前往后计算，后者从后往前计算  
+
+```
+<body>
+    <h2>子元素筛选选择器</h2>
+    <h3>:first-child、:last-child、:only-child</h3>
+    <div class="left first-div">
+        <div class="div">
+            <a>:first-child</a> <!--是父级元素下的第一个元素，被选中-->
+            <a>第二个元素</a>
+            <a>:last-child</a>
+        </div>
+        <div class="div">
+            <a>:first-child</a> <!--是父级元素下的第一个元素，被选中-->
+        </div>
+        <div class="div">
+            <a>:first-child</a> <!--是父级元素下的第一个元素，被选中-->
+            <a>第二个元素</a>
+            <a>:last-child</a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        //查找class="first-div"下的第一个a元素
+        //针对所有父级下的第一个
+        $('.first-div a:first-child').css("color", "#CD00CD");
+    </script>
+</body>
+```
+
+##### (6).表单元素选择器
+\$(":input") : 选择所有input，textarea，select和button元素。  
+\$(":text") : 匹配所有文本框。  
+\$(":password") : 匹配所有密码框。  
+\$(":radio") : 匹配所有单选按钮。  
+\$(":checkbox") : 匹配所有复选框。  
+\$(":submit") : 匹配所有提交按钮。  
+\$(":image") : 匹配所有图像域。  
+\$(":reset") : 匹配所有重置按钮。  
+\$(":button") : 匹配所有按钮。  
+\$(":file") : 匹配所有文件域。  
+
+##### (7).表单对象属性筛选选择器
+\$(":enabled") : 选取可用的表单元素。  
+\$(":disabled") : 选取不可用的表单元素。  
+\$(":checked") : 选取被选中的\<input>元素。  
+\$(":selected") : 选取被选中的\<option>元素。  
+
+>1.选择器适用于复选框和单选框，对于下拉框元素, 使用 :selected 选择器  
+2.在某些浏览器中，选择器:checked可能会错误选取到<option>元素，所以保险起见换用选择器input:checked，确保只会选取<input>元素
+
+##### (8).特殊选择器this
+$(this)和this有什么区别？  
+this是JavaScript中的关键字，指的是当前的上下文对象，简单的说就是方法/属性的所有者。
+下面例子中，imooc是一个对象，拥有name属性与getName方法,在getName中this指向了所属的对象imooc  
+```
+var imooc = {
+    name:"慕课网",
+    getName:function(){
+        //this,就是imooc对象
+        return this.name;
+    }
+}
+imooc.getName(); //慕课网
+```
+当然在JavaScript中this是动态的，也就是说这个上下文对象都是可以被动态改变的(可以通过call,apply等方法)  
+同样的在DOM中this就是指向了这个html元素对象，因为this就是DOM元素本身的一个引用  
+
+假如给页面一个P元素绑定一个事件:
+```
+p.addEventListener('click',function(){
+    //this === p
+    //以下两者的修改都是等价的
+    this.style.color = "red";
+    p.style.color = "red";
+},false);
+```
+通过addEventListener绑定的事件回调中，this指向的是当前的dom对象，所以再次修改这样对象的样式，只需要通过this获取到引用即可  
+```
+ this.style.color = "red"
+```
+
+但是这样的操作其实还是很不方便的，这里面就要涉及一大堆的样式兼容，如果通过jQuery处理就会简单多了，我们只需要把this加工成jQuery对象,换成jQuery的做法：  
+```
+$('p').click(function(){
+    //把p元素转化成jQuery的对象
+    var $this= $(this) 
+    $this.css('color','red')
+})
+```
+通过把$()方法传入当前的元素对象的引用this，把这个this加工成jQuery对象，我们就可以用jQuery提供的快捷方法直接处理样式了  
+
+>this，表示当前的上下文对象是一个html对象，可以调用html对象所拥有的属性和方法。  
+$(this),代表的上下文对象是一个jquery的上下文对象，可以调用jQuery的方法和属性值。
+
+### 参考：
+https://www.imooc.com/code/8353
