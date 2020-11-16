@@ -31,6 +31,9 @@ categories: android
     repo sync # 正常同步一遍即可得到完整目录
     # 或 repo sync -l 仅checkout代码
     ```
+    >如果repo sync时提示"/usr/bin/env: ‘python’: No such file or directory"则去/usr/bin目录下看下有没有python，我的是有python3且是python3.6没有python,因此只能执行python3,而执行不了python。  
+    所以执行该条命令"sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1"后就可以执行python了。
+    
 我下载到的是此时最新的android P的源码。  
 参考blog中提到的[清华大学开源软件镜像站](https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/)的确是个好地方。我同时也在该网站中找到了ubuntu的软件源，并按提示修改了我ubuntu的软件源。
 
