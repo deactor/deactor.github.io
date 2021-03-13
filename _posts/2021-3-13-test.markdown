@@ -3,4 +3,4 @@
 
 ---
 
-![icon](https://github.com/deactor/deactor.github.io/imgs/icon.png)
+![icon](https://raw.githubusercontent.com/deactor/deactor.github.io/master/imgs/icon.png)
