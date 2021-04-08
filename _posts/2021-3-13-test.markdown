@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "test style"
+date:   2021-4-8 17:35:28 +0800
+categories: Practical Memo
+---
+
 ### for test
 #### test line
 
