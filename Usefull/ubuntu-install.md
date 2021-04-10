@@ -1,5 +1,4 @@
 ---
-sort: 5
 title:  "vmware安装ubuntu18.04和shadowswork-qt5"
 ---
 ### vmware player12安装ubuntu18.04

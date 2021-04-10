@@ -1,5 +1,4 @@
 ---
-sort: 8
 title:  "test style"
 ---
 

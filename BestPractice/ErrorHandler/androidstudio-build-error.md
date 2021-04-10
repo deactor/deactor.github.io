@@ -1,5 +1,4 @@
 ---
-sort: 7
 title:  "AndroidStudio编译错误处理"
 ---
 #### 编译报错65535

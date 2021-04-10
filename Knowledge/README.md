@@ -1,8 +1,8 @@
 ---
-sort: 3
+sort: 1
 ---
 
-# 笔记
+# 知识总结
 
 
 {% include list.liquid all=true %}

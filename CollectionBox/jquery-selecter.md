@@ -1,5 +1,4 @@
 ---
-sort: 6
 title:  "jquery选择器"
 ---
 ## jquery选择器

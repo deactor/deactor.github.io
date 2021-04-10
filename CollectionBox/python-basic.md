@@ -1,5 +1,4 @@
 ---
-sort: 2
 title:  "python基础概要"
 ---
 ## 简述

@@ -1,5 +1,4 @@
 ---
-sort: 4
 title:  "清华镜像网站下载android源码并编译"
 ---
 #### 下载android源码方法：

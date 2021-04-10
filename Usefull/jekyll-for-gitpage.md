@@ -1,5 +1,4 @@
 ---
-sort: 1
 title:  "jekyll搭建gitpage"
 ---
 #### 1.搭建gitpage  

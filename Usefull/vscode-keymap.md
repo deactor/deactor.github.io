@@ -1,5 +1,4 @@
 ---
-sort: 3
 title:  "VsCode常用快捷键"
 ---
 ### windows系统操作：
