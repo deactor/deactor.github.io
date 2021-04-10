@@ -1,9 +1,6 @@
 ---
 sort: 1
-layout: post
 title:  "jekyll搭建gitpage"
-date:   2018-10-13 23:35:28 +0800
-categories: jekyll for gitpage
 ---
 #### 1.搭建gitpage  
 参考gitpage官网，按照官网的步骤搭建： [gitpage官网](https://pages.github.com/) 
