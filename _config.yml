@@ -1,7 +1,11 @@
-title: jekyll-rtd-theme
-description: Just another documentation theme compatible with GitHub Pages
+title: 地球修理工
+description: >-
+  不要打扰我写代码
+email: 1203135839@qq.com
+github_username:  deactor
 
 theme: null
+
 
 # debug:
 #   compress: true
