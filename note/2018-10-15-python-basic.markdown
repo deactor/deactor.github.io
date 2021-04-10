@@ -1,9 +1,6 @@
 ---
 sort: 2
-layout: post
 title:  "python基础概要"
-date:   2018-10-15 20:47:00 +0800
-categories: python
 ---
 ## 简述
 python当前是非常火的一门语言，既然新学习一门语言，那么有以下几个问题：  

@@ -1,9 +1,6 @@
 ---
 sort: 3
-layout: post
 title:  "VsCode常用快捷键"
-date:   2018-10-21 18:35:30 +0800
-categories: work efficiency
 ---
 ### windows系统操作：
 + 窗口切换：alt + tab

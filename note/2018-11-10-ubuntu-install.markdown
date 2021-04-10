@@ -1,9 +1,6 @@
 ---
 sort: 5
-layout: post
 title:  "vmware安装ubuntu18.04和shadowswork-qt5"
-date:   2018-11-20 12:59:28 +0800
-categories: Linux
 ---
 ### vmware player12安装ubuntu18.04
 #### 安装过程中碰到的问题：  

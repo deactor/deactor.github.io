@@ -1,9 +1,6 @@
 ---
 sort: 7
-layout: post
 title:  "AndroidStudio编译错误处理"
-date:   2021-4-8 17:35:28 +0800
-categories: Practical Memo
 ---
 #### 编译报错65535
 解决：更新gradle build tools版本解决，尝试添加muiltdex并没有卵用，因为minSdkVersion配置为26，已经默认开启muiltdex了。

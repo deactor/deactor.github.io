@@ -1,9 +1,6 @@
 ---
 sort: 4
-layout: post
 title:  "清华镜像网站下载android源码并编译"
-date:   2018-11-03 20:12:28 +0800
-categories: android
 ---
 #### 下载android源码方法：
 我的系统是ubuntu 18.04，主要参考了blog[通过清华大学镜像下载Android源码并编译源码](https://www.cnblogs.com/shenchanghui/p/8503623.html)，通过国内镜像网站下载要比从google下载快的多  

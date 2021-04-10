@@ -1,9 +1,6 @@
 ---
 sort: 6
-layout: post
 title:  "jquery选择器"
-date:   2019-3-11 22:11:28 +0800
-categories: jquery
 ---
 ## jquery选择器
 ### 1.普通选择器
