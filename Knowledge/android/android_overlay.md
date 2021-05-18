@@ -9,20 +9,19 @@ title:  "Android Overlay换肤"
 2. 使用和目标app相同的签名，AndroidMainfest中system uid并不需要一致。
 
 3. AndroidMainfest.xml配置  
+    ```
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.example.overlay">
+        <application android:hasCode="false" />
+        <overlay android:targetPackage="com.example.target"
+                 android:isStatic="false"
+                 android:priority="5"/>
+    </manifest>
+    ```   
+   + 动态换肤要点：android:isStatic="false"  
+   + 要覆盖的目标app包名：android:targetPackage="com.example.target"
 
-```
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.overlay">
-    <application android:hasCode="false" />
-    <overlay android:targetPackage="com.example.target"
-             android:isStatic="false"
-             android:priority="5"/>
-</manifest>
-```   
-动态换肤要点：android:isStatic="false"
-要覆盖的目标app包名：android:targetPackage="com.example.target"
-
-1. 编译生成的apk就是皮肤包。安装后，设置该皮肤包enable即可实现换肤。（安装就行，并不需要像其他blog中写的要放到指定目录下，放指定目录下一般是系统Rom集成时放皮肤包用的，用于开机时加载安装皮肤包。）
+4. 编译生成的apk就是皮肤包。安装后，设置该皮肤包enable即可实现换肤。（安装就行，并不需要像其他blog中写的要放到指定目录下，放指定目录下一般是系统Rom集成时放皮肤包用的，用于开机时加载安装皮肤包。）
 
 ### 主要原理：
 1. AndroidMainfest.xml中携带<overlay>标签的apk在安装时，会被识别为皮肤包，包解析后会存储相应信息到OverlaySetting中，并由OverlayManagerService处理。Overlay的信息会被存储在/data/system/overlays.xml中。
