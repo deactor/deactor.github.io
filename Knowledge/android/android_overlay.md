@@ -31,9 +31,9 @@ title:  "Android Overlay换肤"
    
 
 >setEnable  
->这个操作并不一定要在目标apk中进行，在任何apk中都可以，比如在Settings中切换主题，获取此处的皮肤包包名（OverlayManagerService可以获取到所有已安装的皮肤包信息），将其设置为enable。  
->OverlayManagerService并不是开放的，所以非源码环境并不能获取到该Service。第三方只能通过shell命令进行enable，或Rom进行了客制化，有相应的接口，比如Settings中规定皮肤包名尾部为overlay1，overlay2等，当在settings中切换主题时，就将所有包名尾部是overlay1的包进行enable。而且请求换主题的app需要拥有android.permission.CHANGE_OVERLAY_PACKAGES权限，而且还要是System或Root的uid，比如这里请求换主题的app就是Settings。  
->setEnable在OverlayManagerService中只会enable目标app的一个皮肤包，比如目标app有overlay1，overlay2，overlay3这三个皮肤包，当enable overlay1时，自动把overlay2，overlay3都设置为disable了。
+>1. 这个操作并不一定要在目标apk中进行，在任何apk中都可以，比如在Settings中切换主题，获取此处的皮肤包包名（OverlayManagerService可以获取到所有已安装的皮肤包信息），将其设置为enable。  
+>2. OverlayManagerService并不是开放的，所以非源码环境并不能获取到该Service。第三方只能通过shell命令进行enable，或Rom进行了客制化，有相应的接口，比如Settings中规定皮肤包名尾部为overlay1，overlay2等，当在settings中切换主题时，就将所有包名尾部是overlay1的包进行enable。而且请求换主题的app需要拥有CHANGE_OVERLAY_PACKAGES权限，而且还要是System或Root的uid，比如这里请求换主题的app就是Settings。  
+>3. setEnable在OverlayManagerService中只会enable目标app的一个皮肤包，比如目标app有overlay1，overlay2，overlay3这三个皮肤包，当enable overlay1时，自动把overlay2，overlay3都设置为disable了。
 
 Overlays.xml中的信息如下：
 ```
