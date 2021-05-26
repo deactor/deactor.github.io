@@ -38,3 +38,21 @@ android {
     }
 }
 ```
+
+#### NullPointerException(no error messge)
+问题背景：之前一直可以正常编译，把代码copy到另一台电脑上，编译就出现了这个问题。唯一区别是这台电脑的as是4.2.1最新版本，之前那台电脑as是4.1版本。
+解决：更新gradle build tools
+```
+报错：
+Caused by: java.lang.NullPointerException 	at com.google.common.base.Preconditions.checkNotNull(Preconditions.java:782)
+```
+更新gradle build tools
+```
+//顶层build.gradle
+classpath 'com.android.tools.build:gradle:4.2.1'
+```
+```
+//gradle-wrapper.properties
+distributionUrl=https\://services.gradle.org/distributions/gradle-6.7.1-bin.zip
+```
+删除.gradle文件夹，重启as。问题解决。
