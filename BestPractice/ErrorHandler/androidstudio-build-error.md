@@ -56,3 +56,6 @@ classpath 'com.android.tools.build:gradle:4.2.1'
 distributionUrl=https\://services.gradle.org/distributions/gradle-6.7.1-bin.zip
 ```
 删除.gradle文件夹，重启as。问题解决。
+
+#### android library编译打包，class.jar是空的，不能用
+检查是否进行了混淆等，minifyEnabled需要为false，否则打包出来的就是空的，血的教训。
