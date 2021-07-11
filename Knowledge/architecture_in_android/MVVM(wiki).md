@@ -2,7 +2,7 @@
 title:  "MVVM wiki介绍"
 ---
 
-## Model–view–viewmodel
+## [Model–view–viewmodel](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel)
 Model–view–viewmodel (MVVM) is a software architectural pattern that facilitates the separation of the development of the graphical user interface (the view) – be it via a markup language or GUI code – from the development of the business logic or back-end logic (the model) so that the view is not dependent on any specific model platform. The viewmodel of MVVM is a value converter, meaning the viewmodel is responsible for exposing (converting) the data objects from the model in such a way that objects are easily managed and presented. In this respect, the viewmodel is more model than view, and handles most if not all of the view's display logic.The view model may implement a mediator pattern, organizing access to the back-end logic around the set of use cases supported by the view.  
 >模型-视图-视图模型 (MVVM) 是一种软件架构模式，它有助于将图形用户界面（视图）的开发（无论是通过标记语言还是 GUI 代码）与业务逻辑的开发或后台分离，以便视图不依赖于任何特定的模型平台。 MVVM 的viewmodel是一个值转换器， 意味着viewmodel负责以易于管理和呈现对象的方式公开（转换）model中的数据对象。在这方面，viewmodel 中modle比view多，并且处理大部分（如果不是全部）视图的显示逻辑。 
 viewmodel可以实现中介模式，围绕视图支持的用例集组织对后端逻辑的访问。
