@@ -36,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
 
 #### 数据更新时序图 （待添加）
 
+#### 事件处理
++ 方法引用：利用view自身的onClick等属性设置触发方法。就是普通的绑定方法的方式，需要方法签名必须与监听器对象中的方法（如OnClickListener的onclick方法）签名完全一致。`android:onClick="@{viewModel::onButtonClicked}"`
++ 监听器绑定：也是利用view的onclick等属性，但是赋的是表达式，可以传递额外的参数，不需要签名和onClick方法一致。`android:onClick="@{() -> viewModel.onButtonClicked(view.visible)}"`
++ 也可以还按照以前的方式，在代码里`setOnClickListener(new onClickListener{...})`;
+
+> 方法引用与监听器绑定区别：  
+>1. 方法引用和监听器绑定之间的主要区别在于实际监听器实现是在绑定数据时创建的，而不是在事件触发时创建的。如果您希望在事件发生时对表达式求值，则应使用监听器绑定。监听器绑定是在事件发生时运行的绑定表达式。它们类似于方法引用，但允许您运行任意数据绑定表达式。
+>2. 在方法引用中，方法的参数必须与事件监听器的参数匹配。在监听器绑定中，只有您的返回值必须与监听器的预期返回值相匹配（预期返回值无效除外）。
+
 ### 问题：
 1. bingding类提供了infalte和bind两个方法，有什么区别？  
     + inflate内部是调用DataBindingUtil.inflate，该方法会先使用inflate来扩充布局，然后再调用bind方法，返回binding对象。  
