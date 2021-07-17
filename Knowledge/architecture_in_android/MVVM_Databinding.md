@@ -3,7 +3,7 @@ title:  "MVVM DataBinding笔记"
 ---
 
 ### DataBinding
-#### 绑定数据：
+#### 数据绑定类：
 系统会为每个布局文件生成一个绑定类。默认情况下，类名称基于布局文件的名称，它会转换为驼峰大小写形式并在末尾添加 Binding 后缀。如：
 >activity_main.xml -> ActivityMainBinding 需要xml中按照databinding的方式添加layout顶层标签，不然不会生成binding类,data标签不是生成binding类的必要条件，layout一定要。  
 
