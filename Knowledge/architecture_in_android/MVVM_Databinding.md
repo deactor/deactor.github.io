@@ -139,6 +139,7 @@ public class MyTextViewBindingAdapter {
         // ...
     }
    ```
+   
 #### @BindingConversion使用：自定义转换
 如：给一个TextView的text属性绑定int类型的值。
 ```xml
