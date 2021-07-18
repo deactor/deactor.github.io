@@ -2,8 +2,8 @@
 title:  "MVVM DataBinding笔记"
 ---
 
-### DataBinding
-#### 数据绑定类：
+# DataBinding
+## 数据绑定类：
 系统会为每个布局文件生成一个绑定类。默认情况下，类名称基于布局文件的名称，它会转换为驼峰大小写形式并在末尾添加 Binding 后缀。如：
 >activity_main.xml -> ActivityMainBinding 需要xml中按照databinding的方式添加layout顶层标签，不然不会生成binding类,data标签不是生成binding类的必要条件，layout一定要。  
 
@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-#### 数据更新时序图 （待添加）
-
-#### 事件处理
+## 数据更新时序图 
+![数据更新时序图](https://raw.githubusercontent.com/deactor/deactor.github.io/master/imgs/DataBinding_DualDirection.png)
+## 事件处理
 + 方法引用：利用view自身的onClick等属性设置触发方法。就是普通的绑定方法的方式，需要方法签名必须与监听器对象中的方法（如OnClickListener的onclick方法）签名完全一致。`android:onClick="@{viewModel::onButtonClicked}"`
 + 监听器绑定：也是利用view的onclick等属性，但是赋的是表达式，可以传递额外的参数，不需要签名和onClick方法一致。`android:onClick="@{() -> viewModel.onButtonClicked(view.visible)}"`
 + 也可以还按照以前的方式，在代码里`setOnClickListener(new onClickListener{...})`;
@@ -45,7 +45,188 @@ public class MainActivity extends AppCompatActivity {
 >1. 方法引用和监听器绑定之间的主要区别在于实际监听器实现是在绑定数据时创建的，而不是在事件触发时创建的。如果您希望在事件发生时对表达式求值，则应使用监听器绑定。监听器绑定是在事件发生时运行的绑定表达式。它们类似于方法引用，但允许您运行任意数据绑定表达式。
 >2. 在方法引用中，方法的参数必须与事件监听器的参数匹配。在监听器绑定中，只有您的返回值必须与监听器的预期返回值相匹配（预期返回值无效除外）。
 
-### 问题：
+## 绑定适配器BindAdapter
+**作用**：用于数据到view的适配，即数据变化，将变化后的值使用BindAdapter中的方法设置到view上。BindAdapter并不持有view对象，view对象和变化后的值均由binding类提供，BindAdapter仅仅负责将所提供的数据设置到所提供的view上。比如TextView的text属性所赋的ObservableField值进行了set操作，就会在绑定类中调用到TextViewBindAdatper中`@BindingAdapter("android:text")`所修饰的方法(view参数和String参数)，该方法下就调用`view.setText(String)`来修改TextView的text属性。
+
+### 自定义BindAdapter
+>注意点:   
+>1. 自定义的绑定适配器会替换由 Android 框架提供的默认适配器。
+>2. 数据绑定库在匹配时会忽略自定义命名空间。--- 有什么影响？？？？初步认为是android:text和app:text没有区别，都会认为是对text的绑定，不能分开绑定。
+>3. @BindingAdapter("android:onLayoutChange")这种处理监听器的，BindAdapter的方法中的监听器只能有一个方法。
+
+```java
+    // OnViewDetachedFromWindow和OnViewAttachedToWindow都只能有一个方法。
+    @BindingAdapter({"android:onViewDetachedFromWindow", "android:onViewAttachedToWindow"}, requireAll=false)
+    public static void setListener(View view, OnViewDetachedFromWindow detach, OnViewAttachedToWindow attach) {
+        if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB_MR1) {
+            OnAttachStateChangeListener newListener;
+            if (detach == null && attach == null) {
+                newListener = null;
+            } else {
+                newListener = new OnAttachStateChangeListener() {
+                    @Override
+                    public void onViewAttachedToWindow(View v) {
+                        if (attach != null) {
+                            attach.onViewAttachedToWindow(v);
+                        }
+                    }
+                    @Override
+                    public void onViewDetachedFromWindow(View v) {
+                        if (detach != null) {
+                            detach.onViewDetachedFromWindow(v);
+                        }
+                    }
+                };
+            }
+
+            OnAttachStateChangeListener oldListener = ListenerUtil.trackListener(view, newListener,
+                    R.id.onAttachStateChangeListener);
+            if (oldListener != null) {
+                view.removeOnAttachStateChangeListener(oldListener);
+            }
+            if (newListener != null) {
+                view.addOnAttachStateChangeListener(newListener);
+            }
+        }
+    }
+```
+#### @BindAdapter使用：修饰方法，用于在BindingAdapter中执行自定义处理。
+```java
+// 如下自定义BindingAdapter设置了text属性的setter处理。不需要任何地方引用该类，build会自动生成在绑定类中调用该方法，而不是用默认的TextViewBindingAdapter中的方法。
+public class MyTextViewBindingAdapter {
+    private static final String TAG = "MyTextViewBindingAdapter";
+
+    @BindingAdapter("android:text")
+    public static void setText(TextView view, CharSequence text) {
+        Log.d(TAG, "setText: text -> " + text);
+        view.setText(text + "what??");
+    }
+}
+```
+#### @BindingMethods使用：修饰类，用于指明view属性的setter方法。
+1. 修饰View类。
+   ```java
+    @BindingMethods({
+        // 该attribute可以直接在xml中使用，当其观察值变更时，会调用view的setTheMyText方法。
+        @BindingMethod(type = MyTextView.class, attribute = "app:mytext", method = "setTheMyText")
+    })
+    public class MyTextView extends TextView {
+        // 对于mytext属性（并需要在该类中声明变量），如果存在setter方法（下面的setMytext）就不要进行BindingMethod。反之则需要指明属性的setter方法。
+        public void setTheMyText(String text){
+            // 处理逻辑
+            this.setText(text);
+        }
+
+        // 如果view下存在该set方法，那么就不需要上面BindingMethod，build时会根据属性名和参数找到该方法用于处理。
+        public void setMytext(ObservableField<String> text){
+            this.setText(text.get());
+        }
+    }
+   ```
+2. 修饰BindAdapter类。当View中没有进行BindingMethods且也没有对应view属性的标准Setter方法时，可以在BindAdapter中指明绑定关系。
+   ```java
+    public class MyTextView extends TextView {
+        public void setTheMyText(String text){
+            // 处理逻辑
+            this.setText(text);
+        }
+    }
+
+    @BindingMethods({
+        @BindingMethod(type = MyTextView.class, attribute = "app:mytext", method = "setTheMyText")
+    })
+    public class MyTextViewBindingAdapter {
+        // ...
+    }
+   ```
+#### @BindingConversion使用：自定义转换
+如：给一个TextView的text属性绑定int类型的值。
+```xml
+<!-- mytext接收String类型，但是传递的是int类型 -->
+<com.qdd.test.databindingtest.MyTextView
+    android:id="@+id/tv1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:mytext="@{viewModel.mInt}"
+/>
+```    
+```java
+@BindingMethods({
+        @BindingMethod(type = MyTextView.class, attribute = "app:mytext", method = "setTheMyText")
+})
+public class MyTextViewBindingAdapter {
+
+    // 添加int到String的转换，参数为int，返回值为String。build会找到该方法。
+    @BindingConversion
+    public static String convertIntToString(int value) {
+        return "convert:"+ value;
+    }
+}
+```
+```java
+// 上面代码，在绑定实现类中生成的代码
+public class ActivityMainBindingImpl extends ActivityMainBinding  {
+    @Override
+    protected void executeBindings() {
+        // ...    
+    
+        // batch finished
+        if ((dirtyFlags & 0xeL) != 0) {
+            // 会调用convertIntToString将int转为String后再传给setTheMyText方法。
+            this.tv1.setTheMyText(com.qdd.test.databindingtest.MyTextViewBindingAdapter.convertIntToString(viewModelMIntGet));
+        }
+
+        // ...
+        
+    }
+    // ...
+}
+```
+
+## 双向绑定
+使用方式：`@={}`
+```
+<TextView
+    android:id="@+id/tv1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@={viewModel.mTextStr}"
+    />
+```
+>**注意**：不要引入无限循环  
+view上改变时会调用@InverseBindingAdapter修饰的方法更新data，data变化则会调用@BindingAdapter的方法更新view。这样就会有无限循环，通常通过比较新旧值来打破无限循环。view->data->view(此时新旧值一样，直接return)
+
+```java
+// 系统的TextViewBindingAdapter
+public class TextViewBindingAdapter {
+
+    @BindingAdapter("android:text")
+    public static void setText(TextView view, CharSequence text) {
+        final CharSequence oldText = view.getText();
+        if (text == oldText || (text == null && oldText.length() == 0)) {
+            return;
+        }
+        if (text instanceof Spanned) {
+            if (text.equals(oldText)) {
+                return; // No change in the spans, so don't set anything.
+            }
+        } else if (!haveContentsChanged(text, oldText)) {
+            return; // No content changes, so don't set anything.
+        }
+        // 比较新旧值，避免无限循环
+        view.setText(text);
+    }
+
+    // view上的内容变化时，event = "android:textAttrChanged"触发InverseBindingListener（实现在ActivityMainBindingImpl中）.  
+    // InverseBindingListener会调用该方法获取view上的值,然后再设置给data
+    @InverseBindingAdapter(attribute = "android:text", event = "android:textAttrChanged")
+    public static String getTextString(TextView view) {
+        return view.getText().toString();
+    }
+}
+```
+
+## 问题：
 1. bingding类提供了infalte和bind两个方法，有什么区别？  
     + inflate内部是调用DataBindingUtil.inflate，该方法会先使用inflate来扩充布局，然后再调用bind方法，返回binding对象。  
     + bind内部是调用DataBindingUtil.bind，该方法直接返回binding对象（从DataBinderMapper中查找返回ActivityMainBindingImpl）。
@@ -53,14 +234,14 @@ public class MainActivity extends AppCompatActivity {
 2. BR文件是什么？
     + 数据绑定库在模块包中生成一个名为BR的类，其中包含用于数据绑定的资源的ID（fieldId），路径同绑定类。每个@Bindable修饰的属性都会在该文件中有个ID。
 
-#### @Bindable在程序中的使用：
+### @Bindable在程序中的使用：
 + 修饰属性，该属性不需要是observable数据类型，BR中会生成对应的fieldId，xml中可以引用，但数据变化需要手动进行notifyPropertyChanged(BR.属性名)。
 + 修饰get方法，如getName，即使没有声明name属性，系统也会在BR中生成对应的fieldId（name），xml中可以引用，同样的需要手动通知变化。
 
 > Observable的属性，其set方法内部已经添加了notifyChange方法来通知属性变化。所以不需要再手动notifyChange。
 
-### 绑定类生成的代码：
-#### xml中不添加data标签时：
+## 绑定类生成的代码：
+### xml中不添加data标签时：
 ``` xml
 <!-- activity_main.xml 内容如下： -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -214,7 +395,7 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     //end
 }
 ```
-#### xml中添加data标签，数据非Observable时：
+### xml中添加data标签，数据非Observable时：
 修改activity_main.xml，添加data部分后，绑定类的内容如何变化。
 ```xml
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -512,7 +693,7 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     // ...
 }
 ```
-#### xml中添加data标签，数据为Observable，xml中进行调用时：
+### xml中添加data标签，数据为Observable，xml中进行调用时：
 ```xml
 <!-- text改为引用 viewModel.textStr -->
 <TextView
