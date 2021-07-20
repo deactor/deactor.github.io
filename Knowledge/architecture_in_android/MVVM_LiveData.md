@@ -245,6 +245,113 @@ public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> 
 + owner非第一次由非活跃状态变为活跃状态时，仅当非活跃状态时，livedata有变化，才会收到livedata的最新值。
 
 ### LifeCycle的状态以及LiveData怎么判断LifyCycle是否活跃
+>ComponentActivity.java实现了LifecycleOwner接口成为一个LifecycleOwner，可提供lifecycle，其提供的lifycyle为Lifecycle子类LifecycleRegistry（内部对外提供状态设置和切换接口）。
+
+>LiveData判断活跃：内部子类ObserverWrapper存储active状态，根据此变量判断是否为活跃状态，同时通过activeStateChanged来修改此变量。ObserverWrapper子类LifecycleBoundObserver在state至少为start时会设置active（即start和resume状态）为true。其他状态为false。在removeObserver时也会设置为false。
+
+```java
+// ComponentActivity.java中
+@Override
+protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    // 注入一个ReportFragment，通过该对象，从framework对activity的lifecycle state进行管理
+    ReportFragment.injectIfNeededIn(this);
+}
+
+@Override
+protected void onSaveInstanceState(Bundle outState) {
+    mLifecycleRegistry.markState(Lifecycle.State.CREATED);
+    super.onSaveInstanceState(outState);
+}
+```
+LifeCycle中的事件,在activity生命周期函数别调用时，就会发出这些事件（由ReportFrgment代为发出）。
+```java
+// 事件
+public enum Event {
+    ON_CREATE, // Constant for onCreate event of the {@link LifecycleOwner}.
+    ON_START, // Constant for onStart event of the {@link LifecycleOwner}.
+    ON_RESUME, // Constant for onResume event of the {@link LifecycleOwner}.
+    ON_PAUSE, // Constant for onPause event of the {@link LifecycleOwner}.
+    ON_STOP, // Constant for onStop event of the {@link LifecycleOwner}.
+    ON_DESTROY, // Constant for onDestroy event of the {@link LifecycleOwner}.
+    ON_ANY // An {@link Event Event} constant that can be used to match all events.
+}
+// 状态
+public enum State {
+    DESTROYED, // 对于activity，会Activity#onDestroy()调用之前处于该状态。
+    INITIALIZED, // 对于activity，会在Activity已构造但还未调用onCreate时处于该状态。
+    CREATED, // 对于activity，在activity.onCreate之后或onStop之前会处于该状态。
+    STARTED, // 对于activity，在activity.onStart之后或onPause之前会处于该状态。
+    RESUMED; // 对于activity，在activity.onResume被调用之后处于该状态。
+}
+
+// 根据事件，状态的转换方式
+static State getStateAfter(Event event) {
+    switch (event) {
+        case ON_CREATE:
+        case ON_STOP:
+            return CREATED;
+        case ON_START:
+        case ON_PAUSE:
+            return STARTED;
+        case ON_RESUME:
+            return RESUMED;
+        case ON_DESTROY:
+            return DESTROYED;
+        case ON_ANY:
+            break;
+    }
+    throw new IllegalArgumentException("Unexpected event value " + event);
+}
+```
+
+```java
+public abstract class LiveData<T> {
+    // ...
+
+    // 移除observer时将对于observer标记为非活跃状态。
+    public void removeObserver(@NonNull final Observer<? super T> observer) {
+        assertMainThread("removeObserver");
+        ObserverWrapper removed = mObservers.remove(observer);
+        if (removed == null) {
+            return;
+        }
+        removed.detachObserver();
+        removed.activeStateChanged(false);
+    }
+
+    class LifecycleBoundObserver extends ObserverWrapper implements GenericLifecycleObserver {
+        @NonNull
+        final LifecycleOwner mOwner;
+
+        // 判断至少为STARTED状态为active状态。
+        @Override
+        boolean shouldBeActive() {
+            return mOwner.getLifecycle().getCurrentState().isAtLeast(STARTED);
+        }
+
+        @Override
+        public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
+            if (mOwner.getLifecycle().getCurrentState() == DESTROYED) {
+                removeObserver(mObserver);
+                return;
+            }
+            activeStateChanged(shouldBeActive());
+        }
+    }
+}
+```
+
+### LiveData及其子类
++ LiveData：内部数据不可变，未提供public的set方法。
++ MutableLiveData：提供setValue和postValue方法更新LiveData数据，即可变的LiveData。
+  + setValue：需要在主线程中执行。
+  + postValue：可以在子线程中执行。
++ MediatorLiveData:合并多个 LiveData 源。只要任何原始的 LiveData 源对象发生更改，就会触发 MediatorLiveData 对象的观察者。同样未提供public的set方法。
+
+
+>ViewModel 应只会向观察者公开不可变的 LiveData 对象，即不应该让观察者来修改LiveData。如官方Todo-demo：
+` private final MutableLiveData<Event<String>> mOpenTaskEvent = new MutableLiveData<>();`对外的getter方法`public LiveData<Event<String>> getOpenTaskEvent() {return mOpenTaskEvent;}`返回的是LiveData而不是MutableLiveData。
 
 ## 问题
 ### ViewModel中不能存context，碰到需要context的处理怎么办？
