@@ -364,7 +364,7 @@ gradle插件3.0以上会默认指定buildToolsVersion，可以通过[官网](htt
 ```
 Duplicate class com.alibaba.fastjson.JSON found in modules jetified-core-runtime.jar (core.aar) and jetified-fastjson-1.2.73.jar (com.alibaba:fastjson:1.2.73)
 ```
-**原因**：core.aar中引用了fastjson，引用的lib module中也引用了fastjson，产生了重复引用
+**原因**：core.aar中引用了fastjson，引用的lib module中也引用了fastjson，产生了重复引用  
 **解决**：只保留一个，引入lib时排除fastjson，如这里保留core.aar中的fastjson，而将引用的Tools lib module中的fastjson排除。
 ```
 implementation(project(":Tools")) {
