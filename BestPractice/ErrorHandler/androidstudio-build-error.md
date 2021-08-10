@@ -371,3 +371,5 @@ implementation(project(":Tools")) {
     exclude group: 'com.alibaba'
 }
 ```
+>**问题来了，这个group是啥？**  
+>外部依赖项如'com.example.android:app-magic:12.3'，它们都是maven下的jar包，这个依赖名由两个':'号分为三个部分group:name:version。group也是在maven库中的存放路径，根据这三个信息就能从maven库中找到对应的jar，而且implementation也可以这么写``implementation group: 'com.example.android', name: 'app-magic', version: '12.3'``
