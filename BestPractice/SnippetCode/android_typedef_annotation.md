@@ -34,3 +34,6 @@ public abstract class ActionBar {
 > 参数未引用任何已定义的常量（NAVIGATION_MODE_STANDARD、NAVIGATION_MODE_LIST
 > 或 NAVIGATION_MODE_TABS），系统会生成一条警告。 您还可以结合使用 @IntDef
 > 和 @IntRange，以指明某个整数可以是一组给定的常量，也可以是某个范围内的值。
+
+## 注意
+跟lint检查有关系，lint的默认检查规则包含改注解检查，如果自定义了lint检查规则，去除了这一项，是不会提示错误的。
