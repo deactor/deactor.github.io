@@ -373,3 +373,10 @@ implementation(project(":Tools")) {
 ```
 >**问题来了，这个group是啥？**  
 >外部依赖项如'com.example.android:app-magic:12.3'，它们都是maven下的jar包，这个依赖名由两个':'号分为三个部分group:name:version。group也是在maven库中的存放路径，根据这三个信息就能从maven库中找到对应的jar，而且implementation也可以这么写``implementation group: 'com.example.android', name: 'app-magic', version: '12.3'``
+	
+---
+	
+#### Gradle sync failed: failed to find Build Tools revision 25.0.0
+报错原因：缺少该版本build tools。  
+报错背景：2021年了，要给一个2017年Android 4的项目增加功能，年代久远，拉取代码导入工程就报了错。  
+解决方式：添加该版本build tools, 在file -> settings -> System settings -> Android sdk -> SDK tools -> 勾选"Show package details" -> 选择安装对应版本的build tools就ok了
