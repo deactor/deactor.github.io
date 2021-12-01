@@ -99,5 +99,6 @@ Mapping:
 ```
 
 ### 碰到的坑
-1. 目标包不能使用AppComptActivity，只能用Activity，不然换肤后会直接奔溃，报这个Activity需要设置AppCompt主题，但是在AndroidManifest中给这个activity配置了对应的主题也没用，就是奔溃。原因不明。
+1. 目标包不能使用AppComptActivity，只能用Activity，不然换肤后会直接奔溃，报这个Activity需要设置AppCompt主题，但是在AndroidManifest中给这个activity配置了对应的主题也没用，就是奔溃。原因不明。初步判断系统在Overlay AppCompt主题时存在问题，如果出现莫名其妙的Button找不到背景资源等问题，也可以看看是不是用了AppCompt theme或style。
 2. 不能覆盖drawable下的xml文件，报错的那种，比如drawable下放一个帧动画的xml，那么设置皮肤包后，目标app在用到这个xml的时候就会报找不到资源，所以要在皮肤包中将这个xml删掉，只保留对应的图片文件就行。
+3. seekbar需要设置padding，否则overlay前后不能保证padding一致，可能存在seekbar绘制有问题，尤其在seekbar设置前后景时。
