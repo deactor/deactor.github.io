@@ -102,3 +102,59 @@ Mapping:
 1. 目标包不能使用AppComptActivity，只能用Activity，不然换肤后会直接奔溃，报这个Activity需要设置AppCompt主题，但是在AndroidManifest中给这个activity配置了对应的主题也没用，就是奔溃。原因不明。初步判断系统在Overlay AppCompt主题时存在问题，如果出现莫名其妙的Button找不到背景资源等问题，也可以看看是不是用了AppCompt theme或style。
 2. 不能覆盖drawable下的xml文件，报错的那种，比如drawable下放一个帧动画的xml，那么设置皮肤包后，目标app在用到这个xml的时候就会报找不到资源，所以要在皮肤包中将这个xml删掉，只保留对应的图片文件就行。
 3. seekbar需要设置padding，否则overlay前后不能保证padding一致，可能存在seekbar绘制有问题，尤其在seekbar设置前后景时。
+    
+```
+// 主题问题举例：Caused by: android.view.InflateException: Binary XML file line #9 in com.xxx.xxx:layout/activity_main: For input string: "@2131690012"
+    
+01-01 00:01:04.359 E/AndroidRuntime( 4858): FATAL EXCEPTION: main
+01-01 00:01:04.359 E/AndroidRuntime( 4858): Process: com.xxx.xxx, PID: 4858
+01-01 00:01:04.359 E/AndroidRuntime( 4858): java.lang.RuntimeException: Unable to start activity ComponentInfo{com.xxx.xxx/com.xxx.xxx.MainActivity}: android.view.InflateException: Binary XML file line #9 in com.xxx.xxx:layout/activity_main: For input string: "@2131690012"
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3321)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3460)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:83)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2067)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.os.Handler.dispatchMessage(Handler.java:107)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.os.Looper.loop(Looper.java:214)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.ActivityThread.main(ActivityThread.java:7407)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at java.lang.reflect.Method.invoke(Native Method)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:492)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1030)
+01-01 00:01:04.359 E/AndroidRuntime( 4858): Caused by: android.view.InflateException: Binary XML file line #9 in com.xxx.xxx:layout/activity_main: For input string: "@2131690012"
+01-01 00:01:04.359 E/AndroidRuntime( 4858): Caused by: java.lang.NumberFormatException: For input string: "@2131690012"
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at sun.misc.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:2043)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at sun.misc.FloatingDecimal.parseFloat(FloatingDecimal.java:122)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at java.lang.Float.parseFloat(Float.java:451)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.content.res.TypedArray.getFloat(TypedArray.java:474)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at androidx.constraintlayout.widget.ConstraintLayout$LayoutParams.<init>(ConstraintLayout.java:2735)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at androidx.constraintlayout.widget.ConstraintLayout.generateLayoutParams(ConstraintLayout.java:1972)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at androidx.constraintlayout.widget.ConstraintLayout.generateLayoutParams(ConstraintLayout.java:482)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.view.LayoutInflater.rInflate(LayoutInflater.java:1125)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1084)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.view.LayoutInflater.inflate(LayoutInflater.java:682)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.view.LayoutInflater.inflate(LayoutInflater.java:534)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.view.LayoutInflater.inflate(LayoutInflater.java:481)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at com.android.internal.policy.PhoneWindow.setContentView(PhoneWindow.java:438)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.Activity.setContentView(Activity.java:3335)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at com.xxx.xxx.MainActivity.onCreate(MainActivity.java:45)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.Activity.performCreate(Activity.java:7832)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.Activity.performCreate(Activity.java:7821)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1306)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3296)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3460)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:83)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2067)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.os.Handler.dispatchMessage(Handler.java:107)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.os.Looper.loop(Looper.java:214)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at android.app.ActivityThread.main(ActivityThread.java:7407)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at java.lang.reflect.Method.invoke(Native Method)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:492)
+01-01 00:01:04.359 E/AndroidRuntime( 4858):     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1030)
+01-01 00:01:04.496 I/ActivityManager( 2665): Process com.xxx.xxx (pid 4858) has died: fore TOP 
+    
+// 解决方式：修改theme为Android早期style，不要用ThemeCompat
+<application android:theme="@android:style/Theme.NoTitleBar">
+```
