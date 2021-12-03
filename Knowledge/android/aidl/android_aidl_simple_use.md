@@ -13,7 +13,7 @@ import android.os.RemoteException;
 import android.os.Process;
 
 /*参考自http://www.cnblogs.com/lipeil/archive/2012/08/27/2659330.html
-* 1、AIDL 适用于 进程间通信，并且与Service端多个线程并发的情况(这个多线程并发是怎么体现的？就是多个客户端可以连接一个服务端)
+* 1、AIDL 适用于 进程间通信，并且与Service端多个线程并发的情况(这个多线程并发是怎么体现的？见aidl线程篇)
 * 2、AIDL语法：基础数据类型都可以适用，List Map等有限适用。static field 不适用。
 */
 
