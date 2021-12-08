@@ -380,3 +380,10 @@ implementation(project(":Tools")) {
 报错原因：缺少该版本build tools。  
 报错背景：2021年了，要给一个2017年Android 4的项目增加功能，年代久远，拉取代码导入工程就报了错。  
 解决方式：添加该版本build tools, 在file -> settings -> System settings -> Android sdk -> SDK tools -> 勾选"Show package details" -> 选择安装对应版本的build tools就ok了
+	
+---
+	
+#### Execution failed for task ':app:mergeDebugResources'. Failed to compile values file.
+报错原因：attr.xml中重复定义了name。  
+解决方式：修改重复的定义。  
+注意：最终的报错只有上面标题的一点点错误信息，没有指明具体错在哪，注意编译信息往上翻一翻，会有具体指明哪里有问题的。
