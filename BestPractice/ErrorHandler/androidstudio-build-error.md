@@ -387,3 +387,33 @@ implementation(project(":Tools")) {
 报错原因：attr.xml中重复定义了name。  
 解决方式：修改重复的定义。  
 注意：最终的报错只有上面标题的一点点错误信息，没有指明具体错在哪，注意编译信息往上翻一翻，会有具体指明哪里有问题的。
+	
+---
+	
+#### 导入项目特定的framework.jar 但是AS编译找不到符号。
+要使用framework.jar中的方法，覆盖sdk中不允许访问的方法，与一般的添加implementation不同，还需要在根build.gradle中添加compilerArgs。  
+```
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+	    //"../framework.jar" 为相对位置，需要参照着修改，或者用绝对位置
+            options.compilerArgs.add('-Xbootclasspath/p:app/libs/framework.jar')
+        }
+    }
+}
+```
+**注意：** 上面的写法在AS 4.2.2版本就失效了。要用下面的新写法：
+```
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        Set<File> fileSet = options.bootstrapClasspath.getFiles()
+        List<File> newFileList =  new ArrayList<>();
+        //"../framework.jar" 为相对位置，需要参照着修改，或者用绝对位置
+        newFileList.add(new File("./app/libs/framework.jar"))
+        newFileList.addAll(fileSet)
+        options.bootstrapClasspath = files(
+                newFileList.toArray()
+        )
+    }
+}
+```
