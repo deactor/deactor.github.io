@@ -11,3 +11,14 @@ title:  "Android 签名文件转换"
 1. openssl pkcs8 -in platform.pk8 -inform DER -outform PEM -out shared.priv.pem -nocrypt
 2. openssl pkcs12 -export -in platform.x509.pem -inkey shared.priv.pem -out shared.pk12 -name platform 
 3. keytool -importkeystore -deststorepass platform -destkeypass platform -destkeystore platform.keystore -srckeystore shared.pk12 -srcstoretype PKCS12 -srcstorepass platform -alias platform 
+
+### 手动签名
+jarsigner -keystore E:\platform.jks -signedjar app_signed.apk app_unsigned.apk platform
++ jarsigner：jdk中带的工具。
++ E:\platform.jks：签名文件路径
++ platform：签名文件别名（alias）
+
+输入命令后会提示输入密码。填写正确签名密码即可进行签名。  
+
+如果提示"java.util.zip.ZipException: invalid entry compressed size"则说明app_unsigned.apk是已经签过名的。需要把已经签的签名给去掉。
+app_unsigned.apk改app_unsigned.zip，将META-INF目录删除，重新将zip换成apk即可。
