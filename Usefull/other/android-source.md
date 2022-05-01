@@ -1,5 +1,5 @@
 ---
-title:  "清华镜像网站下载android源码并编译"
+title:  "国内镜像网站下载android源码并编译"
 ---
 > [Android官网](https://source.android.google.cn/setup/build/initializing?hl=zh-cn)已经写的很详细了。此处记录一些要点。
 #### 下载android源码方法：
