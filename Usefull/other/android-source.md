@@ -1,7 +1,8 @@
 ---
 title:  "国内镜像网站下载android源码并编译"
 ---
-> [Android官网](https://source.android.google.cn/setup/build/initializing?hl=zh-cn)已经写的很详细了。此处记录一些要点。
+> [Android官网](https://source.android.google.cn/setup/build/initializing?hl=zh-cn)已经写的很详细了。此处记录一些要点。  
+
 #### 下载android源码方法：
 有两个下载源供选择，通过国内镜像网站下载要比从google下载快的多：
 + [清华大学镜像下载Android源码并编译源码](https://www.cnblogs.com/shenchanghui/p/8503623.html)
