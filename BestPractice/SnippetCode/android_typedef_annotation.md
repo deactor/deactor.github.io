@@ -30,6 +30,28 @@ public abstract class ActionBar {
     public abstract void setNavigationMode(@NavigationMode int mode);
 }
 ```
+也可以直接将常量定义到@interface中
+```
+public abstract class ActionBar {
+    //...
+    // Define the list of accepted constants and declare the NavigationMode annotation
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({NavigationMode.NAVIGATION_MODE_STANDARD, NavigationMode.NAVIGATION_MODE_LIST, NavigationMode.NAVIGATION_MODE_TABS})
+    public @interface NavigationMode {
+        int NAVIGATION_MODE_STANDARD = 0;
+        int NAVIGATION_MODE_LIST = 1;
+        int NAVIGATION_MODE_TABS = 2;
+    }
+
+    // Decorate the target methods with the annotation
+    @NavigationMode
+    public abstract int getNavigationMode();
+
+    // Attach the annotation
+    public abstract void setNavigationMode(@NavigationMode int mode);
+}
+```
+
 > 构建此代码时，如果 mode
 > 参数未引用任何已定义的常量（NAVIGATION_MODE_STANDARD、NAVIGATION_MODE_LIST
 > 或 NAVIGATION_MODE_TABS），系统会生成一条警告。 您还可以结合使用 @IntDef
