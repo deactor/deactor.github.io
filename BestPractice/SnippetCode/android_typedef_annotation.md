@@ -31,7 +31,7 @@ public abstract class ActionBar {
 }
 ```
 也可以直接将常量定义到@interface中
-```
+```java
 public abstract class ActionBar {
     //...
     // Define the list of accepted constants and declare the NavigationMode annotation
