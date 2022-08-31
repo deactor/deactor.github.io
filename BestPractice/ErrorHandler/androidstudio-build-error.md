@@ -374,7 +374,22 @@ implementation(project(":Tools")) {
 >**问题来了，这个group是啥？**  
 >外部依赖项如'com.example.android:app-magic:12.3'，它们都是maven下的jar包，这个依赖名由两个':'号分为三个部分group:name:version。group也是在maven库中的存放路径，根据这三个信息就能从maven库中找到对应的jar，而且implementation也可以这么写``implementation group: 'com.example.android', name: 'app-magic', version: '12.3'``
 	
->注：exclude对于implementation（file("xxxxx.jar")）不好使，会报错找不到exclude  
+>注：exclude对于implementation（files("xxxxx.jar")）不好使，会报错找不到exclude，因为jar包内未包含一些信息，gradle无法进行exclude，即gradle不支持exclude file,jar包里依赖都会被引入。如果是本地module或远端module中有类与jar中的冲突，可以通过下方配置，一次性将所有module中的重复包exclude，保留jar包中的来使用。如果是两个jar包中包冲突则无能为力，只能让提供方提供一个没有重复类的jar包。  
+	
+```
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment:2.2.2'
+    implementation 'androidx.navigation:navigation-ui:2.2.2'
+}
+
+// 上面implementation的远端module中包含的"androidx.annotation"都会被排除
+configurations.implementation {
+    exclude group: 'androidx.annotation'
+}
+```
 	
 ---
 	
