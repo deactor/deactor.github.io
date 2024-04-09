@@ -8,7 +8,7 @@ title:  "Kotlin基础总结"
 
 在kotlin中，官方推荐尽量使用val来保证数据安全性。
 
-〉kotlin中的数据类型：String,Int,Double,Boolean,Float等注意首字母都是大写的。
+> kotlin中的数据类型：String,Int,Double,Boolean,Float等注意首字母都是大写的。
 
 完整的变量声明：
 ```kotlin
