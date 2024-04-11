@@ -116,3 +116,89 @@ fun main() {
     println("sum of 19 and 23 is ${sum(19, 23)}")
 }
 ```
+
+## let的用法
+```kotlin
+// 使用 let 函数处理可空值
+val processedValue = optionalValue?.let {
+    // 在这里，'it' 就是 optionalValue 的非空版本
+    it.capitalize() + " processed"
+} ?: "Default value when optionalValue is null"
+```
+```kotlin
+// 上面的?:是kotline中Elvis 运算符，用法如下：即将nullableString赋值给nonNullString时，判断nullableString若为空，则将"Default string"赋值给nonNullString。相当于给一个非空的默认值。
+val nonNullString: String = nullableString ?: "Default string"
+```
+
+## 双引号的含义
+!! 是一个后缀操作符，被称为非空断言（not-null assertion operator）。它用于强制转换一个可空类型的变量或表达式为非空类型。除非明确知道一个变量不会为null，否则就会有空指针风险。谨慎使用该操作符。
+
+## 问号的作用
+变量声明时默认都是非空类型的，如要声明可空类型变量，则类型后面要加？
+```kotlin
+val nullableString: String? = getNullableString()
+
+// !!执行可空强转非空
+val nonNullableString: String = nullableString!!
+```
+
+## 类型判断
+### is 与 !is 操作符用于类型判断
+```kotlin
+// 判断obj是否是String类型
+if (obj is String) {
+    print(obj.length)
+}
+
+// 判断obj是否不是String类型
+if (obj !is String) { // 与 !(obj is String) 相同
+    print("Not a String")
+}
+```
+
+## 类型转换
+### as 与 as?用于类型转换
+ + as ：如果转换失败，转换操作符会抛出一个异常。比如将Int强转为String
+ + as? ：如果转换失败，会返回一个null，而不是抛异常。
+ 
+如：
+```kotlin
+// 转换失败会抛异常
+val x: String = y as String
+
+// 转换失败，会返回null给x
+val x: String? = y as? String
+```
+
+## 条件
+### if表达式
+在 Kotlin 中，if 是一个表达式：它会返回一个值。 因此就不需要三元运算符（条件 ? 然后 : 否则），因为普通的 if 就能胜任这个角色。
+如：
+```kotlin
+val max = if (a > b) a else b
+
+// 还可以加else if
+val maxLimit = 1
+val maxOrLimit = if (maxLimit > a) maxLimit else if (a > b) a else b
+
+// 分支还可以是代码块，这种情况最后的表达式作为该块的值
+val max = if (a > b) {
+    print("Choose a")
+    a
+} else {
+    print("Choose b")
+    b
+}
+
+// 所谓代码块的值就是最后一个非空表达式的值成为整个代码块的值
+如｛
+	val a = 2
+	val b = 3
+｝此代码块的值就是b的值，即3.
+{
+	val a = 2
+	val b = 3
+	a + b
+}此代码块的值就是a+b的值，即5
+```
+### When 表达式
