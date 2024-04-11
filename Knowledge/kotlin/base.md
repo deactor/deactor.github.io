@@ -202,3 +202,156 @@ val max = if (a > b) {
 }此代码块的值就是a+b的值，即5
 ```
 ### When 表达式
+```kotlin
+// 类似switch-case，但是比switch-case强大，不需要break，从上到下匹配，匹配到则执行->后面的语句
+when (x) {
+    1 -> print("x == 1")
+    2 -> print("x == 2")
+    else -> {
+        print("x is neither 1 nor 2")
+    }
+}
+
+//when还可以作为表达式，其匹配到的表达式的值就是when表达式的值。注意when作为表达式时必须要有else(也有例外，但最好统一加else)，如：
+val y = when (x) {
+    1 -> x + 1
+    2 -> x + 2
+    else -> {
+        x + 3
+    }
+}
+
+// 对于多条件匹配可以在一行组合，如：
+when (x) {
+    0, 1 -> print("x == 0 or x == 1")
+    else -> print("otherwise")
+}
+
+
+// 可以用任意表达式（而不只是常量）作为分支条件
+when (x) {
+    s.toInt() -> print("s encodes x")
+    else -> print("s does not encode x")
+}
+
+// 还可以检测一个值在（in）或者不在（!in）一个区间或者集合中
+when (x) {
+    in 1..10 -> print("x is in the range")
+    in validNumbers -> print("x is valid")
+    !in 10..20 -> print("x is outside the range")
+    else -> print("none of the above")
+}
+
+// 另一种选择是检测一个值是（is）或者不是（!is）一个特定类型的值。
+// 这里的Any是什么？？？？？？？？？？？？？？？？？
+fun hasPrefix(x: Any) = when(x) {
+    is String -> x.startsWith("prefix")
+    else -> false
+}
+
+// when 也可以用来取代 if-else if 链。 如果不提供参数，所有的分支条件都是简单的布尔表达式，而当一个分支的条件为真时则执行该分支：
+when {
+    x.isOdd() -> print("x is odd")
+    y.isEven() -> print("y is even")
+    else -> print("x+y is odd")
+}
+
+// 可以使用以下语法将 when 的主语（subject，译注：指 when 所判断的表达式）捕获到变量中：
+// 上面这句翻译的不太直白，待理解重新组织语言？？？？？？？？？？？？
+fun Request.getBody() =
+    when (val response = executeRequest()) {
+        is Success -> response.body
+        is HttpError -> throw HttpException(response.status)
+    }
+```
+
+## 循环
+### For循环
+for 循环可以对任何提供迭代器（iterator）的对象进行遍历，这相当于java中的 foreach 循环。
+```kotlin
+for (item in collection) {
+    print(item)
+}
+
+// 也可以
+for (item: Int in collection) {
+    // ……
+}
+
+// 对于数字区间还可以用区间表达式
+for (i in 1..3) {
+    println(i)
+}
+for (i in 6 downTo 0 step 2) {
+    println(i)
+}
+
+// 如果你想要通过索引遍历一个数组或者一个 list，你可以这么做：
+val array = arrayOf("a", "b", "c")
+for (i in array.indices) {
+    println(array[i])
+}
+// 或者你可以用库函数 withIndex：
+val array = arrayOf("a", "b", "c")
+for ((index, value) in array.withIndex()) {
+    println("the element at $index is $value")
+}
+```
+### while
+while与其它语言比较类似：
+```kotlin
+while (x > 0) {
+    x--
+}
+
+do {
+  val y = retrieveData()
+} while (y != null) // y 在此处可见
+```
+## 返回与跳转
+涉及return，break，continue标签，具体详见[官网](https://book.kotlincn.net/text/returns.html)
+
+## 异常
+> kotlin没有受检异常是什么意思？？？？？？？
+
+### throw
+```kotlin
+fun main() {
+//sampleStart
+    throw Exception("Hi There!")
+//sampleEnd
+}
+```
+
+### try-catch
+```kotlin
+// 与java相同
+try {
+    // 一些代码
+} catch (e: SomeException) {
+    // 处理程序
+} finally {
+    // 可选的 finally 块
+}
+
+// 与java不同的地方：try 是一个表达式，可以有返回值
+// try-表达式的返回值是 try 块中的最后一个表达式或者是（所有）catch 块中的最后一个表达式。 finally 块中的内容不会影响表达式的结果。
+val a: Int? = try { input.toInt() } catch (e: NumberFormatException) { null }
+```
+
+### Nothing 类型
+在 Kotlin 中 throw 是表达式，throw 表达式的类型是 Nothing 类型，这个类型没有值，而是用于标记永远不能达到的代码位置。 在你自己的代码中，你可以使用 Nothing 来标记一个永远不会返回的函数：
+```kotlin
+val s = person.name ?: throw IllegalArgumentException("Name required")
+```
+```kotlin
+fun fail(message: String): Nothing {
+    throw IllegalArgumentException(message)
+}
+```
+当你调用该函数时，编译器会知道在该调用后就不再继续执行了：
+```kotlin
+val s = person.name ?: fail("Name required")
+println(s)     // 在此已知“s”已初始化
+```
+**还是没明白Nothing哪里好用，有什么好处？？？？？？？？？？？？**
