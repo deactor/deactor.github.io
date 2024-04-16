@@ -355,3 +355,149 @@ val s = person.name ?: fail("Name required")
 println(s)     // 在此已知“s”已初始化
 ```
 **还是没明白Nothing哪里好用，有什么好处？？？？？？？？？？？？**
+
+## 类
+型如：
+```kotlin
+// class 类名 类头 {类体} （类头，类体都是可选的）
+class Person constructor(firstName: String) { /*……*/ }
+```
+### 构造函数
+类有一个主构造函数并可能有一个或多个次构造函数。
+```kotlin
+// 主构造函数在类名后面，主构造函数的参数可以在属性初始化和初始化块中直接使用
+// 不显示声明主构造函数，隐式默认也会有一个无参的主构造函数
+class Person(name: String, age: Int) {
+    // 属性初始化可以直接使用主构造函数的参数
+    val mName: String = name
+    var mAge: Int = age
+    var mHight: Int = 0
+    var mWight: Int = 0
+
+    private val mSax: String
+
+    // 初始化块，类似java中的游离代码块，会在构造对象时调用。
+    // 只是kotlin中给这种代码块加了明确的init修饰
+    init {
+        mSax = "man"
+    }
+
+    // 次构造函数要委托给主构造函数，可以直接委托，也可以通过别的次构造函数间接委托。
+    // 通过this委托到同一个类的另一个构造函数
+    // 该次构造函数直接委托主构造函数
+    constructor(name: String, age: Int, hight: Int): this(name, age){
+        // 注意：委托发生在次构造函数的第一条语句时，相当与这里有一条java的super()
+        // 同时属性直接初始化和init初始化块实际都相当于在主构造函数内部。
+        // 所以代码的执行是属性初始化 -> init初始化块 -> 接下来下面的语句执行
+        mHight = hight
+    }
+
+    // 该次构造函数委托上面的次构造函数
+    constructor(name: String, age: Int, hight: Int, wight: Int): this(name, age, hight){
+        mWight = wight
+    }
+}
+
+// 注意：kotlin中是没有new关键字的，要创建对象，直接调用构造函数即可。如：
+val person = Person("tom", 32)
+```
+
+### 抽象类
+与java一样，子类继承抽象类，必须实现抽象方法。
+```kotlin
+abstract class Student{
+    abstract fun study()
+}
+
+// 继承，在：后面声明父类的构造函数
+class HighStudent: Student() {
+    override fun study() {
+        TODO("Not yet implemented")
+    }
+}
+```
+另外kotlin中抽象类还可以继承覆盖一个非抽象的开放成员
+```kotlin
+// open类 和 open方法
+open class ChildPerson {
+    open fun study(){}
+}
+
+// 抽象类可以复写open方法，继承Student的类都会覆盖ChildPerson中的默认实现
+abstract class Student : ChildPerson(){
+    abstract override fun study()
+}
+```
+> open是什么作用？？？？ 这么做有什么好处？？？？？？？
+> open是描述一个类、函数、属性是否可重写或继承。kotlin中默认类不可继承，只有open修饰的类可继承。同时open修饰方法，表示该方法可被子类重写，否则子类不可重写该方法。
+> open修饰属性表示属性可被重写，常用于重写val修饰的不可变属性。同时open修饰属性和方法一样，重写的属性或方法都要用override来修饰。同时属性或方法声明为open，其所属的类必须是open的。
+> override的属性和方法默认具有open的属性，可继续被其子类重写，若不想被重写，则在override前加final。抽象类默认就具有open属性，不需要再用open修饰
+
+### 继承
+kotlin中所有类都有一个共同的父类，即Any，类似java中的Object  
+默认情况下kotlin中的类都是final的，即不可被继承。要是类可被继承，需要用open关键字修饰。  
+同java一样，子类构造时必须调用父类的构造函数。
+```kotlin
+// 父类，有个主构造函数Base(p: Int)
+open class Base(p: Int)
+
+// 子类主构造函数调用父类的主构造函数Base(p: Int)
+class Derived(p: Int) : Base(p)
+
+
+class MyView : View {
+    // 子类没有主构造函数，次构造函数必须使用super来调用父类的构造函数
+    constructor(ctx: Context) : super(ctx)
+    // 上面这个次构造函数或者写成下面这样
+    //constructor(ctx: Context) : this(ctx, null)
+
+
+    // 子类没有主构造函数，次构造函数必须使用super来调用父类的构造函数
+    constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs)
+}
+```
+> 注意：同java一样，子类构造时先构造父类。这意味着，基类构造函数执行时，派生类中声明或覆盖的属性都还没有初始化。在基类初始化逻辑中（直接或者通过另一个覆盖的 open 成员的实现间接）使用任何一个这种属性，都可能导致不正确的行为或运行时故障。 设计一个基类时，应该避免在构造函数、属性初始化器或者 init 块中使用 open 成员。
+
+同java，super用来调用父类的方法，不同点在于内部类的调用方式，如下：
+```kotlin
+open class Rectangle {
+    open fun draw() { println("Drawing a rectangle") }
+    val borderColor: String get() = "black"
+}
+
+class FilledRectangle: Rectangle() {
+    override fun draw() {
+        val filler = Filler()
+        filler.drawAndFill()
+    }
+
+    // inner用于声明内部类
+    inner class Filler {
+        fun fill() { println("Filling") }
+        fun drawAndFill() {
+            // 调用外部类使用super@外部类类名
+            super@FilledRectangle.draw() // 调用 Rectangle 的 draw() 实现
+            fill()
+            println("Drawn a filled rectangle with color ${super@FilledRectangle.borderColor}") // 使用 Rectangle 所实现的 borderColor 的 get()
+        }
+    }
+}
+```
+此外Kotlin支持多继承，那么super如何用？如下：
+```kotlin
+open class Rectangle {
+    open fun draw() { /* …… */ }
+}
+
+interface Polygon {
+    fun draw() { /* …… */ } // 接口成员默认就是“open”的
+}
+
+class Square() : Rectangle(), Polygon {
+    // 编译器要求覆盖 draw()：
+    override fun draw() {
+        super<Rectangle>.draw() // 调用 Rectangle.draw()
+        super<Polygon>.draw() // 调用 Polygon.draw()
+    }
+}
+```
