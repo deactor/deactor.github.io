@@ -434,3 +434,9 @@ gradle.projectsEvaluated {
     }
 }
 ```
+#### Gradle版本问题
+如果之前编译是好的，忽然某天，或换个电脑，编译不了了，还报的是很奇怪的问题。则先确认Gradle版本。
+首先确认项目下是否有gradle文件夹（注意不是.gradle）,如果没有，那么就要在setting下配置，如果有，那么看下其下gradle-wrapper.properties中的版本是多少，与setting中是否一致。
+上面无，则在File->Settings->Build,Execution,Deployment->Build Tooles->Gradle中设置Distribution为本地的gradle版本。
+上面有，Gradle中设置Distribution为本地的gradle版本，则查看版本是否一致，如果是Wrapper，则确认下Gradle JDK是否正确。
+上面确认无问题后，再看下File->Project Structure下的Project选项卡的Gradle Version版本是否一致，且Android Gradle Plugin Version的版本是否与Gradle Version匹配。
