@@ -449,3 +449,13 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-6.1.1-bin.zip
 zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 ```
+
+---
+
+#### Proxy设置后取消不了，导致网络连接不了的问题，如ssl peer error等
+之前设置过proxy，虽然在androidstudio的设置中改为了noProxy，实际还是有proxy。需要完全去除才行。
+```
+1. 确保项目目录下的gradle.properties文件中没有proxy的设置，有的话注释
+2. 确保电脑用户目录下的.gradle文件夹下的gradle.properties文件中没有proxy的设置，有的话注释
+3. 确保AndroidStudio的设置-gradle-gradlesetting的Gradle user home对应gradle路径下的gradle.properties中没有proxy的设置，有的话注释
+```
