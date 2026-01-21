@@ -48,7 +48,8 @@ Integer 继承了 Object；ArrayList 继承了 List；但是 List<Interger>
 + 上界通配符：<? extends Number>，指明参数类型必须是Number的子类。
 + 下界通配符：<? super Integer>, 指明参数类型必须是Integer类或其父类。
 + 无界通配符：< ? > ,任意类型。
-利用通配符可以实现向上转型。（泛型本身不能进行向上转型）
+利用通配符可以实现向上转型。（泛型本身不能进行向上转型）. 
+
 ```
 public class GenericsWildcardDemo {
     public static void main(String[] args) {
@@ -60,6 +61,7 @@ public class GenericsWildcardDemo {
     }
 }
 ```
+
 泛型方法：以下方法都可以作为泛型方法。
 + 普通方法
 + 静态方法
