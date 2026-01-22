@@ -33,7 +33,7 @@ jniDemo
 
 answerjni.java中：
 
-```
+``` java
 package com.wind.jnidemo;
 
 import android.util.Log;
@@ -55,7 +55,7 @@ private static native String Nanswer();
 
 badanswerjni.java中：
 
-```
+```java
 package com.wind.jnidemo.badanswer;
 
 import android.util.Log;
@@ -76,7 +76,7 @@ public static native String answer();
 写对应的jni文件，一般是c或者cpp文件。名称一般用包名+类名，下划线连接的方式命名，当然这个文件名称可以是随意的。
 com_wind_jnidemo_answerjni.c文件：
 
-```
+```c
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -217,7 +217,7 @@ include $(BUILD_SHARED_LIBRARY)
 
 MainActivity测试代码如下：
 
-```
+```java
 package com.wind.jnidemo;
 
 import com.wind.jnidemo.R;
@@ -383,7 +383,7 @@ demo实验结果：
 还是上面的demo：
 修改answerjni.java
 
-```
+```java
 package com.wind.jnidemo;
 
 import android.util.Log;
@@ -416,7 +416,7 @@ private static native String Nanswer();
 
 修改相应的com_wind_jnidemo_answerjni.c的native_answer函数：
 
-```
+```c
 jstring native_answer(JNIEnv* env,jobject thiz){
 LOGD("native_answer");
 testclzz = (*env)->FindClass(env,"com/wind/jnidemo/answerjni"); //拿到jclass
